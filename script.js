@@ -36,4 +36,24 @@ function operate(a, b, operator) {
         case "/": return divide(a, b);
     }
 }
-let a, b, operator;
+// Typing in numbers
+// TODO: account for overflow
+const display_div = document.querySelector("#display");
+let display_buffer = "";
+
+const number_buttons = document.querySelectorAll(".number-button");
+number_buttons.forEach((button) => {
+    button.addEventListener("click", () => {
+        let button_number = button.getAttribute("id");
+        display_buffer += button_number;
+        display_div.innerHTML = display_buffer; 
+    });
+});
+
+// Clear display
+// TODO: clear memory
+const clear_button = document.querySelector("#clear");
+clear_button.addEventListener("click", () => {
+    display_div.innerHTML = "";
+    display_buffer = "";
+})
