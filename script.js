@@ -52,6 +52,11 @@ const number_display = document.querySelector("#number-display");
 const number_buttons = document.querySelectorAll(".number-button");
 number_buttons.forEach((button) => {
     button.addEventListener("click", () => {
+        if (registers[0] != undefined && operator_buffer == "") {
+            number_buffer = clear(number_display);
+            current_register_index = 0;
+            registers[0] == undefined;
+        }
         let button_number = button.getAttribute("id");
         number_buffer += button_number;
         number_display.innerHTML = number_buffer; 
@@ -80,12 +85,21 @@ const operator_display = document.querySelector("#operator-display");
 const operator_buttons = document.querySelectorAll(".operator-button");
 operator_buttons.forEach((button) => {
     button.addEventListener("click", () => {
+        // Allow chaining operations
+        if (operator_buffer != "" && registers[0] != undefined && number_buffer.length != 0) {
+            evaluate();
+
+            operator_buffer = button.getAttribute("id");
+            operator_display.innerHTML = operator_buffer;
+
+        }
         // Allow operator change if no second number input yet
-        if (number_buffer.length == 0 || current_register_index == 0) {
+        if (number_buffer.length == 0 || operator_buffer == "") {
             operator_buffer = button.getAttribute("id");
             operator_display.innerHTML = operator_buffer;
         }
 
+        console.log(registers, current_register_index, operator_buffer);
         if (current_register_index == 0) {
             registers[current_register_index] = Number(number_buffer);
             current_register_index = 1;
@@ -95,17 +109,26 @@ operator_buttons.forEach((button) => {
 });
 
 // Compute operation
-const equals_button = document.querySelector("#equals");
-equals_button.addEventListener("click", () => {
+function evaluate() {
     console.log(registers, current_register_index, number_buffer, operator_buffer);
     if (registers[0] == undefined || number_buffer.length == 0 || operator_buffer.length == 0) throw RangeError;
 
     registers[current_register_index] = Number(number_buffer);
     number_buffer = clear(number_display);
 
-    registers[0] = Number(operate(registers[0], registers[1], operator_buffer));
+    try {
+        registers[0] = Number(operate(registers[0], registers[1], operator_buffer));
+    }
+    catch(err) {
+        if (err == RangeError) console.log("Don't divide by zero!")
+    }
     operator_buffer = clear(operator_display);
     registers[1] = undefined;
 
     number_display.innerHTML = registers[0];
+}
+
+const equals_button = document.querySelector("#equals");
+equals_button.addEventListener("click", () => {
+    evaluate();
 })
