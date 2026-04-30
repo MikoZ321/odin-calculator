@@ -20,17 +20,18 @@ body {
     height: 80vh;
 }
 
-#display, .key-row {
+#display-container, .button-row {
     height: 20%;
     width: 100%;
 }
 
-#display {
+#display-container {
     display: flex;
     align-items: center;
-    justify-content: right;
+    justify-content: space-between;
 }
-.key-row {
+
+.button-row {
     display: flex;
     background-color: red;
     justify-content: space-evenly;
